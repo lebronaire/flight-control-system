@@ -21,53 +21,58 @@ let port: SerialPort;
 const pinSubjects: { [pin: number]: Subject<string> } = {};
 
 const init = () => {
-    const serialParser = new SerialPort.parsers.Readline({
-        delimiter: '\n'
-    });
+    try {
+        const serialParser = new SerialPort.parsers.Readline({
+            delimiter: '\n'
+        });
 
-    port = new SerialPort(settings.serial.path || '', {
-        autoOpen: false,
-        // baudRate: 9600,
-        baudRate: 115200,
-        dataBits: 8,
-        parity: 'none',
-        stopBits: 1,
-        lock: false,
-    });
+        port = new SerialPort(settings.serial.path || '', {
+            autoOpen: false,
+            // baudRate: 9600,
+            baudRate: 115200,
+            dataBits: 8,
+            parity: 'none',
+            stopBits: 1,
+            lock: false,
+        });
 
-    port.open((err) => {
-        if (err) {
+        port.open((err) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+
+            port.pipe(serialParser);
+        });
+
+        serialParser.on('data', (data) => {
+            if (data.indexOf('arduino log') !== -1) {
+                console.log(data);
+                return;
+            }
+
+            const chunkA = data.split('=');
+            const pinType = chunkA[0].substr(0, 1);
+            const pin = parseInt(chunkA[0].substr(1, chunkA[0].length));
+            const value = parseInt(chunkA[1]);
+
+            const event: SerialDataEvent = {
+                pinType: pinType === 'a' ? 'analog' : 'digital',
+                pin,
+                value
+            };
+
+            // Call each listener
+            listeners.forEach(ll => ll(event));
+        });
+
+        serialParser.on('error', (err) => {
             console.log(err);
-            throw err;
-        }
-
-        port.pipe(serialParser);
-    });
-
-    serialParser.on('data', (data) => {
-        if (data.indexOf('arduino log') !== -1) {
-            console.log(data);
-            return;
-        }
-
-        const chunkA = data.split('=');
-        const pinType = chunkA[0].substr(0, 1);
-        const pin = parseInt(chunkA[0].substr(1, chunkA[0].length));
-        const value = parseInt(chunkA[1]);
-
-        const event: SerialDataEvent = {
-            pinType: pinType === 'a' ? 'analog' : 'digital',
-            pin,
-            value
-        };
-
-        // Call each listener
-        listeners.forEach(ll => ll(event));
-    });
-
-    serialParser.on('error', (err) => {
+        });
+    } catch (err) {
         console.log(err);
-    });
+    }
+
 };
 
 init();
