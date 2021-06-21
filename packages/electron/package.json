@@ -1,0 +1,12 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "license": "None",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "yarn build"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2"
+  }
+}
