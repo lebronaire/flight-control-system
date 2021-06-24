@@ -47,6 +47,11 @@ export const prosimConfig = async (): Promise<ProsimConfigXML> => {
 
 export const prosimIOCPMapping = async (): Promise<ProsimIOCP> => {
     const prosim = await prosimConfig();
+
+    if (prosim.config.mappings.length === 0) {
+        return {};
+    }
+
     const mappings = prosim.config.mappings[0].mapping;
 
     const flat = mappings
