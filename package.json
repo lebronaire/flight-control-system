@@ -7,7 +7,7 @@
   "main": "./.build/main.js",
   "scripts": {
     "bootstrap-latest": "git fetch & git pull & yarn bootstrap",
-    "bootstrap": "yarn & yarn build & bootstrap-server & bootstrap-desktop-client",
+    "bootstrap": "yarn & yarn build & yarn bootstrap-server & yarn bootstrap-desktop-client",
     "bootstrap-server": "cd packages/server & yarn & yarn build",
     "bootstrap-desktop-client": "cd packages/desktop-client & yarn & yarn build",
     "start": "electron .",
