@@ -27,6 +27,15 @@ interface ProsimIOCP {
 
 export const prosimConfig = async (): Promise<ProsimConfigXML> => {
     const settings = getLocalSettings();
+
+    if (!settings.prosim.configXMLPath) {
+        return {
+            config: {
+                mappings: []
+            }
+        };
+    }
+
     const configXMLPath = path.join(settings.prosim.configXMLPath || 'config.xml');
 
     const file = fs.readFileSync(configXMLPath).toString();
