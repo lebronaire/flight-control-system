@@ -20,11 +20,17 @@ let port: SerialPort;
 
 const pinSubjects: { [pin: number]: Subject<string> } = {};
 
+const SERIAL_PATH_NOT_CONFIGURED_ERROR = 'SERIAL_PATH_NOT_CONFIGURED_ERROR';
+
 const init = () => {
     try {
         const serialParser = new SerialPort.parsers.Readline({
             delimiter: '\n'
         });
+
+        if (!settings.serial.path || settings.serial.path === '') {
+            throw new Error(SERIAL_PATH_NOT_CONFIGURED_ERROR);
+        }
 
         port = new SerialPort(settings.serial.path || '', {
             autoOpen: false,
@@ -70,7 +76,9 @@ const init = () => {
             console.log(err);
         });
     } catch (err) {
-        console.log(err);
+        if (err.message !== SERIAL_PATH_NOT_CONFIGURED_ERROR) {
+            console.log(err);
+        }
     }
 
 };
