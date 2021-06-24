@@ -6,15 +6,8 @@
   "license": "UNLICENSED",
   "main": "./.build/main.js",
   "scripts": {
-    "update-": "",
     "bootstrap": "yarn bootstrap-install & (cd packages/desktop-client & yarn build)",
-    "bootstrap-install": "yarn & (cd packages/server & yarn & yarn build) & (cd packages/desktop-client & yarn) & (cd packages/electron & yarn)",
-    "old-start": "concurrently \"yarn start-server\" \"yarn start-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
-    "start-desktop-client": "(cd packages/desktop-client && yarn start)",
-    "start-server": "(cd packages/server && yarn start)",
-    "watch": "concurrently \"yarn build-electron\" \"yarn start-server\" \"BROWSER=none yarn watch-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
-    "watch-desktop-client": "(cd packages/desktop-client && yarn dev)",
-    "build-electron": "(cd packages/electron && yarn build)",
+    "bootstrap-install": "yarn & (cd packages/server & yarn & yarn build) & (cd packages/desktop-client & yarn)",
     "start": "electron .",
     "build": "tsc",
     "postinstall": "yarn build",
@@ -35,7 +28,8 @@
   },
   "build": {
     "appId": "com.lebronaire.flight-control-system",
-    "productName": "LBA Flight Control System",
-    "mac": {}
+    "productName": "Lebronaire Flight Control System",
+    "mac": {},
+    "win": {}
   }
 }
