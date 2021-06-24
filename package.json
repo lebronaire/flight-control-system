@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "main": "./.build/main.js",
   "scripts": {
+    "bootstrap-latest": "git fetch & git pull & yarn bootstrap",
     "bootstrap": "yarn bootstrap-install & (cd packages/desktop-client & yarn build)",
     "bootstrap-install": "yarn & (cd packages/server & yarn & yarn build) & (cd packages/desktop-client & yarn)",
     "start": "electron .",
