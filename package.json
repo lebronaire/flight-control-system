@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "main": "packages/electron/.build/main.js",
   "scripts": {
+    "bootstrap": "yarn && (cd packages/server && yarn) && (cd packages/desktop-client && yarn) && (cd packages/electron && yarn)",
     "start": "concurrently \"yarn start-server\" \"BROWSER=none yarn start-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
     "start-desktop-client": "(cd packages/desktop-client && yarn start)",
     "start-server": "(cd packages/server && yarn watch)",
