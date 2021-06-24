@@ -4,21 +4,38 @@
   "repository": "https://github.com/lebronaire/flight-control-system.git",
   "author": "",
   "license": "UNLICENSED",
-  "main": "packages/electron/.build/main.js",
+  "main": "./.build/main.js",
   "scripts": {
+    "update-": "",
     "bootstrap": "yarn bootstrap-install & (cd packages/desktop-client & yarn build)",
-    "bootstrap-install": "yarn & (cd packages/server & yarn) & (cd packages/desktop-client & yarn) & (cd packages/electron & yarn)",
-    "start": "concurrently \"yarn start-server\" \"yarn start-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
+    "bootstrap-install": "yarn & (cd packages/server & yarn & yarn build) & (cd packages/desktop-client & yarn) & (cd packages/electron & yarn)",
+    "old-start": "concurrently \"yarn start-server\" \"yarn start-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
     "start-desktop-client": "(cd packages/desktop-client && yarn start)",
     "start-server": "(cd packages/server && yarn start)",
     "watch": "concurrently \"yarn build-electron\" \"yarn start-server\" \"BROWSER=none yarn watch-desktop-client\" \"wait-on http://localhost:3000 && electron .\"",
     "watch-desktop-client": "(cd packages/desktop-client && yarn dev)",
     "build-electron": "(cd packages/electron && yarn build)",
-    "old-start": "electron ."
+    "start": "electron .",
+    "build": "tsc",
+    "postinstall": "yarn build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
+    "@lebronaire/server": "./packages/server"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.4",
     "concurrently": "^6.2.0",
-    "electron": "^13.0.1",
+    "electron": "^13.1.4",
+    "electron-builder": "^22.11.7",
+    "electron-rebuild": "^2.3.5",
+    "typescript": "^4.3.2",
     "wait-on": "^5.3.0"
+  },
+  "build": {
+    "appId": "com.lebronaire.flight-control-system",
+    "productName": "LBA Flight Control System",
+    "mac": {}
   }
 }
