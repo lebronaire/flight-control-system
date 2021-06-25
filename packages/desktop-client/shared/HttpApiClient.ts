@@ -1,19 +1,22 @@
 import axios from 'axios';
 import { resolveHref } from 'next/dist/next-server/lib/router/router';
 
-import { ControlsConfig, ControlsStore, SettingsStore } from './types';
+import { ControlsConfig, ControlsStore, SettingsStore, StatusStore } from './types';
 
 export default class HttpApiClient {
     url: string;
     values: ControlsStore | null;
+    status: StatusStore | null;
     lastRunTime: number;
 
     constructor() {
         this.url = 'http://localhost:3100';
         this.values = null;
+        this.status = null;
         this.lastRunTime = 0;
 
         this.syncValues();
+        this.syncStatus();
     }
 
     async getControlsConfig(): Promise<ControlsConfig> {
@@ -66,6 +69,34 @@ export default class HttpApiClient {
 
     getValues(): ControlsStore | null {
         return this.values;
+    }
+
+    private async syncStatus() {
+        // Decide how long to wait before syncing
+        const MINIMUM_WAIT_TIME = 1000;
+        const nextRunTime = this.lastRunTime + MINIMUM_WAIT_TIME;
+        const durationDiff = nextRunTime - new Date().getTime();
+        const waitDuration = durationDiff < 0 ? 0 : durationDiff;
+
+        await new Promise((resolve) => {
+            setTimeout(() => resolve(true), waitDuration);
+        });
+
+        const resp = await axios.get(`${this.url}/status`);
+
+        if (resp.status !== 200) {
+            throw new Error(resp.statusText);
+        }
+
+        this.status = resp.data as StatusStore;
+
+        this.lastRunTime = new Date().getTime();
+
+        this.syncStatus();
+    }
+
+    getStatus(): StatusStore | null {
+        return this.status;
     }
 
     async getSettings(): Promise<SettingsStore> {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { ControlsConfig, ControlsStore, SettingsStore } from '../shared/types';
+import { ControlsConfig, ControlsStore, SettingsStore, StatusStore } from '../shared/types';
 import { api } from '../shared/Api';
 
 interface ControlsConfigHookResponse {
@@ -20,6 +20,13 @@ interface SettingsHookResponse {
     error: Error | null;
     settings: SettingsStore | null;
 }
+
+interface StatusHookResponse {
+    fetching: boolean;
+    error: Error | null;
+    status: StatusStore | null;
+}
+
 
 export const useControlsConfig = (): ControlsConfigHookResponse => {
     const [fetching, setFetching] = useState(false);
@@ -63,8 +70,11 @@ export const useControlValues = (): ControlValuesHookResponse => {
 
         setValues(values);
 
-        if (fetching && values) {
+        if (fetching && !values) {
             setFetching(true);
+        }
+        else if (values) {
+            setFetching(false);
         }
 
         setTimeout(() => {
@@ -118,5 +128,38 @@ export const useSettings = (): SettingsHookResponse => {
         fetching,
         error,
         settings
+    };
+};
+
+export const useStatus = (): StatusHookResponse => {
+    const [fetching, setFetching] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [status, setStatus] = useState<StatusStore | null>(null);
+
+    const fetchConfig = async () => {
+        const values = api.getStatus();
+
+        setStatus(values);
+
+        if (fetching && !values) {
+            setFetching(true);
+        }
+        else if (values) {
+            setFetching(false);
+        }
+
+        setTimeout(() => {
+            fetchConfig();
+        }, 1000);
+    };
+
+    useEffect(() => {
+        fetchConfig();
+    }, []);
+
+    return {
+        fetching,
+        error,
+        status
     };
 };

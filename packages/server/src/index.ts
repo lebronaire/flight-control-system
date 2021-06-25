@@ -4,8 +4,9 @@ import fastifyCors from 'fastify-cors';
 import { SettingsStore } from './types';
 
 import { getControlsConfig } from './config';
-import { getValue, setValue, getControlValues } from './controls';
+import { getValue, setValue, getControlValues, iocpClient } from './controls';
 import { getSettings, updateSettings } from './config/userSettings';
+import * as serial from './controls/serial';
 
 const server = fastify();
 
@@ -35,6 +36,14 @@ server.post('/config/settings', async (request, reply) => {
 server.get('/config', async (request, reply) => {
     reply.type('application/json').code(200);
     return await getControlsConfig();
+});
+
+server.get('/status', async (request, reply) => {
+    reply.type('application/json').code(200);
+    return {
+        iocp: iocpClient.connected ? 'connected' : 'failed',
+        serialConnected: serial?.port?.isOpen ? 'connected' : 'failed'
+    };
 });
 
 server.get('/controls', async (request, reply) => {

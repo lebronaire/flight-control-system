@@ -3,28 +3,28 @@ import {
     Heading,
     Flex,
     Spacer,
-    IconButton,
 } from '@chakra-ui/react';
 
-import Link from 'next/link';
-
-import { SettingsIcon } from '@chakra-ui/icons';
 import { ControlList } from '../components/Controls/ControlList';
+import { StatusBar } from '../components/StatusBar/StatusBar'
 
 export default function Home() {
     return (
-        <Box py={10} px={5}>
+        <Box py={2} px={2}>
             <Flex>
-                <Heading>LébrønAIRE</Heading>
                 <Spacer />
-
-                <Link href="/settings">
-                    <IconButton aria-label="Settings" icon={<SettingsIcon />} />
-                </Link>
+                <StatusBar />
             </Flex>
 
-            <Box my={10}>
-                <ControlList />
+            <Box py={8} px={3}>
+                <Flex>
+                    <Heading>LébrønAIRE</Heading>
+                    <Spacer />
+                </Flex>
+
+                <Box my={10}>
+                    <ControlList />
+                </Box>
             </Box>
         </Box>
     )

@@ -14,9 +14,9 @@ import { ControlGroup } from './ControlGroup';
 
 export const ControlList = () => {
     const { fetching, controlsConfig } = useControlsConfig();
-    const { values } = useControlValues();
+    const controlValues = useControlValues();
 
-    if (fetching) {
+    if (fetching || controlValues.fetching) {
         return (
             <Box p={5}>
                 <Spinner />
@@ -34,7 +34,7 @@ export const ControlList = () => {
             </Box>
         );
     }
-    else if (!values) {
+    else if (!controlValues.values) {
         return (
             <Box p={5}>
                 <Alert status="error">

@@ -16,7 +16,7 @@ const listeners: SerialDataCallback[] = [];
 
 const settings = getLocalSettings();
 
-let port: SerialPort;
+export let port: SerialPort;
 
 const pinSubjects: { [pin: number]: Subject<string> } = {};
 

@@ -28,9 +28,9 @@ export default class Client {
         this.port = props.port;
 
         this.socket = new net.Socket();
-        this.socket.setTimeout(5 * 1000);
+        this.socket.setTimeout(1000);
         this.connected = false;
-        this.maxReconnects = 2;
+        this.maxReconnects = 0;
 
         this.reconnectAttempts = 0;
 
@@ -46,13 +46,19 @@ export default class Client {
             this.reconnectAttempts = 0;
         });
 
-        this.socket.on('close', () => this._autoReconnect());
+        this.socket.on('close', () => {
+            this.connected = false;
+            this._autoReconnect();
+        });
         this.socket.on('error', (err) => {
-            if (this.reconnectAttempts >= this.maxReconnects) {
-                console.log('Connection Error', err)
-            }
+            this.connected = false;
+
+            // if (this.reconnectAttempts >= this.maxReconnects) {
+            //     console.log('Connection Error', err);
+            // }
         });
         this.socket.on('timeout', () => {
+            this.connected = false;
             console.log('Timeout: Could not connect to IOCP server');
             this._autoReconnect();
         });
@@ -74,7 +80,7 @@ export default class Client {
     }
 
     async connect(): Promise<void> {
-        if (this.reconnectAttempts > this.maxReconnects) {
+        if (this.maxReconnects > 0 && this.reconnectAttempts > this.maxReconnects) {
             throw new Error('Cannot connect to IOCP server');
         }
 
@@ -97,7 +103,7 @@ export default class Client {
     private async _autoReconnect() {
         this.connected = false;
 
-        // console.log('Reconnecting...');
+        console.log('Reconnecting...', this.connected);
         await this.connect();
 
         // Re-subscribe to all variables

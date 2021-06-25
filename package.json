@@ -7,20 +7,24 @@
   "main": "./.build/main.js",
   "scripts": {
     "bootstrap-latest": "git fetch & git pull & yarn bootstrap",
-    "bootstrap": "yarn & yarn build & yarn bootstrap-server & yarn bootstrap-desktop-client",
+    "bootstrap": "yarn & yarn bootstrap-server & yarn bootstrap-desktop-client & yarn build",
     "bootstrap-server": "cd packages/server & yarn & yarn build",
-    "bootstrap-desktop-client": "cd packages/desktop-client & yarn & yarn build",
+    "bootstrap-desktop-client": "cd packages/desktop-client & yarn & yarn build & yarn export",
     "start": "electron .",
     "build": "tsc",
-    "postinstall": "electron-builder install-app-deps",
+    "build-deps": "electron-builder install-app-deps",
+    "postinstall": "yarn build",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
   "dependencies": {
-    "@lebronaire/server": "./packages/server"
+    "@lebronaire/desktop-client": "./packages/desktop-client",
+    "@lebronaire/server": "./packages/server",
+    "serve": "^12.0.0"
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
+    "@types/serve-handler": "^6.1.0",
     "electron": "^13.1.4",
     "electron-builder": "^22.11.7",
     "electron-rebuild": "^2.3.5",

@@ -45,3 +45,8 @@ export interface SettingsStore {
         configXMLPath?: string;
     }
 }
+
+export interface StatusStore {
+    iocp: 'connected' | 'failed';
+    arduino1: 'connected' | 'failed';
+}

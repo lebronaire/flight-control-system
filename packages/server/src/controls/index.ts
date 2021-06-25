@@ -14,7 +14,7 @@ let pinToIOCP: { [pin: number]: number } = {};
 let iocpToPin: { [iocpVariable: number]: number } = {};
 let invertedOutput: { [iocpVariable: number]: boolean } = {};
 
-const iocpClient = new Client({
+export const iocpClient = new Client({
     hostAddress: settings.iocp.host || '',
     port: parseInt(settings.iocp.port || '8092'),
 });
