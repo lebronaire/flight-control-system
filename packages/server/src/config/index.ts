@@ -34,6 +34,8 @@ export const getControlsConfig = async (): Promise<ControlsConfig> => {
         items: [
             { type: 'gauge', name: 'EGT', prosimName: 'APU', pin: 44, iocpVariable: 0, defaultValue: 0, inverted: true, valueOptions: [] },
 
+            { type: 'switch', prosimName: 'APU Low oil pressure', pin: 30, iocpVariable: 0, defaultValue: 0, valueOptions: toggleOnOff },
+
 
             { type: 'switch', switchGroup: { name: 'APU switch', index: 0, label: 'Off' }, prosimName: 'APU switch Off', pin: 8, iocpVariable: 0, defaultValue: 1, inverted: true, valueOptions: toggleOnOff },
             { type: 'switch', switchGroup: { name: 'APU switch', index: 1, label: 'On' }, prosimName: 'APU switch On', pin: undefined, iocpVariable: 0, defaultValue: 0, valueOptions: toggleOnOff },

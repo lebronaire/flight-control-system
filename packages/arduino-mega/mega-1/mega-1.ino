@@ -23,6 +23,11 @@ int servoConfig[54][4];
 Servo myservo;
 
 
+/* LEDs */
+int ledList[] = {30};
+int numberOfLEDs;
+
+
 /*
   @intent(atridge): 54 is the maximum number of inputs on the Mega.
   There is likely a better solution that is more optimised like vectors
@@ -42,6 +47,15 @@ void setup() {
     int pinNumber = inputPinList[ii];
     pinMode(pinNumber, INPUT_PULLUP);
     pinStore[pinNumber] = -1;
+  }
+
+  // LEDs
+  numberOfLEDs = sizeof(ledList) / sizeof(int);
+
+  for (int ii = 0; ii < numberOfLEDs; ii++) {
+    int pinNumber = ledList[ii];
+    pinMode(pinNumber, OUTPUT);
+    pinStore[pinNumber] = 0;
   }
 
   // Servos
@@ -156,14 +170,39 @@ void readSimOutput() {
 }
 
 void updateOutputComponent(int pin) {
+  boolean hasUpdated = false;
+
   // TODO: Update displays
 
-  // TODO: Update LED's
+  // Update LED's
+  for (int ii = 0; ii < numberOfLEDs; ii++) {
+    int ledPinNumber = ledList[ii];
+
+    if (ledPinNumber == pin) {
+      updateLED(pin);
+      hasUpdated = true;
+      return ;
+    }
+  }
+
+  // Exit if work has been done
+  if (hasUpdated == false) {
+    return;
+  }
 
   // Update servos
   updateServo(pin);
+}
 
+void updateLED(int pin) {
+  int ledValue = pinStore[pin];
 
+  if (ledValue == 1) {
+    digitalWrite(pin, HIGH);
+  }
+  else {
+    digitalWrite(pin, LOW);
+  }
 }
 
 void updateServo(int pin) {
