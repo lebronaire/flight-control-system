@@ -1,6 +1,6 @@
 {
-  "name": "@lebronaire/cli",
-  "version": "0.1.0",
+  "name": "lebronaire-cli",
+  "version": "0.1.1",
   "author": {
     "name": "Lebronaire"
   },
