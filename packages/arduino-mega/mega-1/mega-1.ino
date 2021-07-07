@@ -1,9 +1,15 @@
 #include <Servo.h>
 
 /*
+  Ground pins
+*/
+int groundPinList[] = {48};
+int numberOfActiveGroundPins;
+
+/*
   Manually select each pin that we want to enable
 */
-int inputPinList[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
+int inputPinList[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 43};
 int numberOfActiveInputPins;
 
 
@@ -14,7 +20,7 @@ int numberOfActiveInputPins;
   servo: The min/max range that the servo is able to move eg. 0 to 180deg
 */
 int servoList[][5] = {
-  {44, 0, 180, 180, 4}
+  {44, 0, 180, 0, 360}
 };
 
 int numberOfActiveServos;
@@ -22,9 +28,15 @@ int servoConfig[54][4];
 
 Servo myservo;
 
+const int servoStop = 1500;
+const int servoSpeed = 50;
+int potVal = 0;
+int potStop = 0;
+unsigned int servoStart;
+
 
 /* LEDs */
-int ledList[] = {30};
+int ledList[] = {36};
 int numberOfLEDs;
 
 
@@ -40,7 +52,51 @@ int pinStore[54];
 void setup() {
   Serial.begin(115200);
 
-  // Digital pins
+  logger("Initializing...");
+
+  initGroundPins();
+  initDigitalPins();
+  initLedPins();
+  //  initServoPins();
+
+  logger("Ready...");
+}
+
+
+/*
+  Main Loop. All continuous checking logic
+*/
+void loop() {
+    for (int ii = 2; ii < numberOfActiveInputPins; ii++) {
+      syncState(inputPinList[ii]);
+    }
+  
+    readSimOutput();
+  //  dettachAllServos();
+
+
+
+  delay(50);
+}
+
+/*************************************************************************
+  INITIALIZE
+*************************************************************************/
+void initGroundPins() {
+  numberOfActiveGroundPins = sizeof(groundPinList) / sizeof(int);
+
+  logger("Initializing Ground pins...");
+
+  for (int ii = 0; ii < numberOfActiveGroundPins; ii++) {
+    int pinNumber = groundPinList[ii];
+
+    pinMode(pinNumber, OUTPUT);
+    digitalWrite(pinNumber, LOW);
+    pinStore[pinNumber] = -1;
+  }
+}
+
+void initDigitalPins() {
   numberOfActiveInputPins = sizeof(inputPinList) / sizeof(int);
 
   for (int ii = 2; ii < numberOfActiveInputPins; ii++) {
@@ -48,17 +104,19 @@ void setup() {
     pinMode(pinNumber, INPUT_PULLUP);
     pinStore[pinNumber] = -1;
   }
+}
 
-  // LEDs
+void initLedPins() {
   numberOfLEDs = sizeof(ledList) / sizeof(int);
 
   for (int ii = 0; ii < numberOfLEDs; ii++) {
     int pinNumber = ledList[ii];
     pinMode(pinNumber, OUTPUT);
-    pinStore[pinNumber] = 0;
+    pinStore[pinNumber] = -1;
   }
+}
 
-  // Servos
+void initServoPins() {
   numberOfActiveServos = sizeof(servoList) / sizeof(int) / 5;
 
   int servoPin;
@@ -66,8 +124,11 @@ void setup() {
   int inputMax;
   int servoMin;
   int servoMax;
+  String logMessage = "";
 
   for (int ss = 0; ss < numberOfActiveServos; ss++) {
+    logMessage = "";
+
     servoPin = servoList[0][0];
     inputMin = servoList[0][1];
     inputMax = servoList[0][2];
@@ -78,26 +139,23 @@ void setup() {
     servoConfig[servoPin][1] = inputMax;
     servoConfig[servoPin][2] = servoMin;
     servoConfig[servoPin][3] = servoMax;
+
+    pinStore[servoPin] = 0;
+
+    myservo.attach(servoPin);
+    updateServo(servoPin);
+
+    //    delay(1000);
+
+    logMessage = logMessage + "<servo> pin: " + servoPin + "=" + pinStore[servoPin];
+
+    logger(logMessage);
   }
-
-  pinStore[44] = 0;
-
-  pinStore[44] = 30;
-
-  myservo.attach(44);
-  updateServo(44);
 }
 
-void loop() {
-  for (int ii = 2; ii < numberOfActiveInputPins; ii++) {
-    syncState(inputPinList[ii]);
-  }
-
-  readSimOutput();
-
-  delay(50);
-}
-
+/*************************************************************************
+  MAIN
+*************************************************************************/
 /*
   Send message via serial bus
 
@@ -131,8 +189,6 @@ void syncState(int pinNumber) {
 void readSimOutput() {
   while (Serial.available()) {
     String message = Serial.readStringUntil('\n');
-
-    logger(message);
 
     String pinString = "";
     String valueString = "";
@@ -206,6 +262,8 @@ void updateLED(int pin) {
 }
 
 void updateServo(int pin) {
+  String logMessage = "";
+
   int servoValue = pinStore[pin];
   int inputMin = servoConfig[pin][0];
   int inputMax = servoConfig[pin][1];
@@ -221,13 +279,15 @@ void updateServo(int pin) {
 
   int val = map(servoValue, inputMin, inputMax, servoMin, servoMax);
 
-  //  Serial.print("servo: ");
-  //  Serial.print(pin);
-  //  Serial.print(" -> ");
-  //  Serial.println(val);
+  Serial.print("servo: ");
+  Serial.print(pin);
+  Serial.print(" -> ");
+  Serial.println(val);
 
+  logMessage = logMessage + "<updateServo> pin: " + pin + " -> " + val;
+  logger(logMessage);
 
-  myservo.write(val);
+  //  myservo.write(val);
 }
 
 void logger(String l) {

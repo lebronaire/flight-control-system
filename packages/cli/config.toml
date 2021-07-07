@@ -1,0 +1,67 @@
+# Lebronaire Config
+
+# IOCP
+[iocp]
+hostname = "192.168.86.48"
+port = 8092
+
+# Arduino's
+[arduino.mega1]
+path = "/dev/tty.usbmodem146101"
+
+
+[prosim]
+configXMLPath = "/Users/atridgedcosta/Documents/Projects/lebronaire/flight-control-system/packages/server/sample/atr-config.xml"
+
+[controls]
+# Example
+# arduino: Must match the name of an arduino above
+# pin: Exact pin number on the arduino
+# type(optional): guage / led
+# inverted: tue / false
+
+# Lighting
+"Light Main Retract L On" =         { arduino = "mega1", pin = 12, }
+"Light Main Retract R On" =         { arduino = "mega1", pin = 7, }
+"Light Main Fixed L On" =           { arduino = "mega1", pin = 11, }
+"Light Main Fixed R On" =           { arduino = "mega1", pin = 9, }
+"Lights Runway turnoff L On" =      { arduino = "mega1", pin = 10, }
+"Lights Runway turnoff R On" =      { arduino = "mega1", pin = 13, }
+"Lights Taxi On" =                  { arduino = "mega1", pin = 5, }
+"Lights Logo On" =                  { arduino = "mega1", pin = 17, }
+"Lights Position On" =              { arduino = "mega1", pin = 14, }
+"Lights Anti collision On" =        { arduino = "mega1", pin = 2, }
+"Lights Wing On" =                  { arduino = "mega1", pin = 18, }
+"Lights Wheel well On" =            { arduino = "mega1", pin = 16, }
+
+
+# Electric
+"APU Low oil pressure" =            { arduino = "mega1", pin = 36,  type = "led" }
+"APU switch Off" =                  { arduino = "mega1", pin = 8,   inverted = true }
+# "APU switch On" =                 { arduino = "mega1", pin = 999 } 
+"APU switch Start" =                { arduino = "mega1", pin = 6,   inverted = true }
+"Ignition select Left" =            { arduino = "mega1", pin = 3,   inverted = true }
+# "Ignition select Both" =          { arduino = "mega1", pin = 999 }
+"Ignition select Right" =           { arduino = "mega1", pin = 4,   inverted = true }
+"Battery switch On" =               { arduino = "mega1", pin = 43 }
+"Standby power switch Auto" =       { arduino = "mega1", pin = 28,  inverted = true }
+"Standby power switch Bat" =        { arduino = "mega1", pin = 27,  inverted = true }
+
+
+
+# Pneumatic
+"Start 1 GRD" =                     { arduino = "mega1", pin = 22,  inverted = true }
+# "Start 1 Off" =                   { arduino = "mega1", pin = 999 }
+"Start 1 CONT" =                    { arduino = "mega1", pin = 24,  inverted = true }
+"Start 1 FLT" =                     { arduino = "mega1", pin = 26,  inverted = true }
+"Start 2 GRD" =                     { arduino = "mega1", pin = 21,  inverted = true }
+# "Start 2 Off" =                   { arduino = "mega1", pin = 999 }
+"Start 2 CONT" =                    { arduino = "mega1", pin = 20,  inverted = true }
+"Start 2 FLT" =                     { arduino = "mega1", pin = 19,  inverted = true }
+
+
+# Guages
+[APU]
+arduino = "mega1"
+pin = 44
+type = "gauge"

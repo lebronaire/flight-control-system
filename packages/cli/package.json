@@ -1,0 +1,39 @@
+{
+  "name": "@lebronaire/cli",
+  "version": "0.1.0",
+  "author": {
+    "name": "Lebronaire"
+  },
+  "main": "lib/lba.js",
+  "bin": {
+    "lba": "bin/lba"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "lebronaire",
+    "flight sim",
+    "msfs",
+    "arduino",
+    "iocp",
+    "lba"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "esm": "^3.2.25",
+    "rxjs": "^7.1.0",
+    "serialport": "^9.2.0",
+    "toml": "^3.0.0",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "@types/serialport": "^8.0.1",
+    "@types/xml2js": "^0.4.9",
+    "typescript": "^4.3.5"
+  }
+}
