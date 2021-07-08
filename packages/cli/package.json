@@ -1,9 +1,8 @@
 {
   "name": "lba-cli",
-  "version": "0.2.0",
-  "author": {
-    "name": "Lebronaire"
-  },
+  "version": "0.2.2",
+  "author": "Lebronaire",
+  "repository": "https://github.com/lebronaire/flight-control-system/tree/main/packages/cli",
   "main": "lib/lba.js",
   "bin": {
     "lba": "bin/lba"

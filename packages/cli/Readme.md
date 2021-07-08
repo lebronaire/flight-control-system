@@ -4,7 +4,7 @@ The official CLI of Lebronaire
 
 ## About
 
-lba-cli provides a flexible set of commands for connecting any Lebronaire compatible flight controls with Microsoft Flight Simulator 2020.
+lba-cli provides a flexible set of commands for connecting any Lebronaire compatible flight controls with Microsoft Flight Simulator 2020. This feat of engineering greatness was made possible in collaboration with LBA's group of companies, most notably Wavo Panels, CBF and their Avionics division.
 
 
 ## Getting Started
@@ -35,3 +35,7 @@ listArduinoPorts                Display a list of all connected usb ports and th
 start [--verbose]               Connect arduino to iocp/prosim
 
 ```
+
+## Contributions
+
+All contributions are welcome but typically rejected. Please feel free to submit a PR and we will promptly reject with an entertaining comment.
