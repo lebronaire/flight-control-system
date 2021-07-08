@@ -10,12 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cli = void 0;
+const init_1 = require("./commands/init");
 const listArduinoPorts_1 = require("./commands/listArduinoPorts");
 const start_1 = require("./commands/start");
 const help = `
 Lebronaire CLI
 ---------------
 
+init                            Create a 'config.toml' file in the current directory
 listArduinoPorts                Display a list of all connected usb ports and their path
 start                           Connect arduino to iocp/prosim
 
@@ -28,6 +30,9 @@ const cli = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     else if (cmd === 'listArduinoPorts') {
         yield listArduinoPorts_1.listArduinoPorts();
+    }
+    else if (cmd === 'init') {
+        yield init_1.init();
     }
     else if (cmd === 'start') {
         yield start_1.start();
