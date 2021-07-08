@@ -6,9 +6,10 @@ const help = `
 Lebronaire CLI
 ---------------
 
+help                            Display basic commands and arguments
 init                            Create a 'config.toml' file in the current directory
 listArduinoPorts                Display a list of all connected usb ports and their path
-start                           Connect arduino to iocp/prosim
+start [--verbose]               Connect arduino to iocp/prosim
 
 
 `;
