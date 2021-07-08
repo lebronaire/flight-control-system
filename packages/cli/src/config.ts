@@ -2,6 +2,7 @@ import fs from 'fs';
 import toml from 'toml';
 
 import { LbaConfig } from './types';
+import * as logger from './logger';
 
 export const getConfig = async (): Promise<LbaConfig> => {
     try {
@@ -12,7 +13,7 @@ export const getConfig = async (): Promise<LbaConfig> => {
 
         return config;
     } catch (err) {
-        console.log(err);
-        throw err;
+        logger.error('Cannot find config.toml in this directory');
+        process.exit(1);
     }
 };
