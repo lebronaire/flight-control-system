@@ -149,15 +149,21 @@ export default class IOCP {
 
     private onData(message: string): void {
         if (message.startsWith('Arn.Resp:')) {
-            const chunks = message.replace('Arn.Resp:', '').replace(':', '').trim().split('=');
-            const iocpVariable: IOCPVariable = parseInt(chunks[0]);
-            const value: number = parseInt(chunks[1]);
+            message.replace('Arn.Resp:', '')
+                .trim()
+                .split(':')
+                .filter(cc => !!cc)
+                .forEach(cc => {
+                    const chunks = cc.trim().split('=');
+                    const iocpVariable: IOCPVariable = parseInt(chunks[0]);
+                    const value: number = parseInt(chunks[1]);
 
-            const cb = this.subscriptions[iocpVariable];
+                    const cb = this.subscriptions[iocpVariable];
 
-            if (cb) {
-                cb(iocpVariable, value);
-            }
+                    if (cb) {
+                        cb(iocpVariable, value);
+                    }
+                });
         }
     }
 }

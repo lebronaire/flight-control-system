@@ -34,16 +34,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setValue = exports.start = void 0;
 const config_1 = require("../config");
 const prosim_1 = require("../prosim");
-const Serial_1 = __importDefault(require("../Serial"));
 const IOCP_1 = __importDefault(require("../IOCP"));
 const logger = __importStar(require("../logger"));
+const arduino = __importStar(require("../arduino"));
 let store = {};
 let pinToIOCP = {};
+let pinToDevice = {};
 let iocpToPin = {};
 let invertedOutput = {};
 let iocpToName = {};
+let devicePinToType = {};
 let iocpClient;
-const devices = {};
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     logger.system('Starting...');
     logger.system('Loading config.toml...');
@@ -51,8 +52,27 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
     logger.system('Loading prosim config.xml...');
     const controls = yield prosim_1.prosimIOCPMapping(config);
     initLookups(controls);
-    initSerial(config);
+    logger.system('Connecting to IOCP server...');
+    iocpClient = new IOCP_1.default({
+        hostAddress: config.iocp.hostname,
+        port: config.iocp.port
+    });
+    yield iocpClient.connect();
+    logger.system('Initializing Arduino...');
+    yield arduino.initialize(config, handleArduinoEvent);
     initIOCP(config);
+    logger.system(`
+
+_       __ _                               _____ _____  ______ 
+| |     /_/| |                        /\   |_   _|  __ \|  ____|
+| |     ___| |__  _ __ ____  _ __    /  \    | | | |__) | |__   
+| |    / _ \ '_ \| '__/ _//\| '_ \  / /\ \   | | |  _  /|  __|  
+| |___|  __/ |_) | | | (//) | | | |/ ____ \ _| |_| | \ \| |____ 
+|______\___|_.__/|_|  \//__/|_| |_/_/    \_\_____|_|  \_\______|
+                                                                
+                                                                
+   
+    `.trim());
 });
 exports.start = start;
 const initLookups = (controls) => {
@@ -61,48 +81,41 @@ const initLookups = (controls) => {
         if (cc.iocp && cc.pin) {
             iocpToPin[cc.iocp] = cc.pin;
             pinToIOCP[cc.pin] = cc.iocp;
+            pinToDevice[cc.pin] = cc.arduino || '';
             iocpToName[cc.iocp] = kk;
+            devicePinToType[`${cc.arduino}::${cc.pin}`] = cc.type || '';
             if (cc.inverted) {
                 invertedOutput[cc.iocp] = true;
             }
         }
     });
 };
-const initSerial = (config) => __awaiter(void 0, void 0, void 0, function* () {
-    logger.system('Connecting to Arduino mega1...');
-    const mega1 = new Serial_1.default(config.arduino.mega1.path);
-    mega1.addListener(ee => {
-        const iocpVariable = pinToIOCP[ee.pin];
-        if (iocpVariable) {
-            exports.setValue(iocpVariable, parseInt(`${ee.value}`));
-        }
-        else {
-            logger.error(`Unassigned pin ${ee.pin}`);
-        }
-    });
-    devices.mega1 = mega1;
-    while (mega1.port.isOpen === false && mega1.isReady) {
+const handleArduinoEvent = (ee) => {
+    const iocpVariable = pinToIOCP[ee.pin];
+    if (iocpVariable) {
+        exports.setValue(iocpVariable, parseInt(`${ee.value}`));
     }
-});
+    else {
+        console.log(ee);
+        logger.error(`Unassigned pin ${ee.pin}`);
+    }
+};
 const initIOCP = (config) => {
-    logger.system('Connecting to IOCP server...');
-    iocpClient = new IOCP_1.default({
-        hostAddress: config.iocp.hostname,
-        port: config.iocp.port
-    });
     const iocpVariableSubscriptions = Object.values(config.controls)
-        .filter(cc => cc.type === 'led' || cc.type === 'guage')
+        .filter(cc => cc.type === 'led' || cc.type === 'gauge')
         .map(cc => pinToIOCP[cc.pin])
         .filter(cc => !!cc);
-    iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, (iocpVariable, value) => {
+    iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, (iocpVariable, value) => __awaiter(void 0, void 0, void 0, function* () {
         const pin = iocpToPin[iocpVariable];
-        if (!pin) {
+        const device = pinToDevice[pin];
+        if (!pin || !device) {
             return;
         }
-        devices.mega1.send(pin, value);
         const onLabel = value > 1 ? value : '[On]';
-        logger.debug(` > ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
-    });
+        logger.debug(` -> ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
+        const type = devicePinToType[`${device}::${pin}`] || '';
+        yield arduino.send(device, pin, type, value);
+    }));
 };
 const setValue = (iocpVariable, value) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -113,7 +126,7 @@ const setValue = (iocpVariable, value) => __awaiter(void 0, void 0, void 0, func
         if (store[iocpVariable] !== nextValue) {
             store[iocpVariable] = nextValue;
             yield iocpClient.setVariable(iocpVariable, nextValue);
-            logger.debug(` > ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : '[On]'}`);
+            logger.debug(` <- ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : '[On]'}`);
         }
     }
     catch (error) {

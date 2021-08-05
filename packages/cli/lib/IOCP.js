@@ -134,13 +134,19 @@ class IOCP {
     }
     onData(message) {
         if (message.startsWith('Arn.Resp:')) {
-            const chunks = message.replace('Arn.Resp:', '').replace(':', '').trim().split('=');
-            const iocpVariable = parseInt(chunks[0]);
-            const value = parseInt(chunks[1]);
-            const cb = this.subscriptions[iocpVariable];
-            if (cb) {
-                cb(iocpVariable, value);
-            }
+            message.replace('Arn.Resp:', '')
+                .trim()
+                .split(':')
+                .filter(cc => !!cc)
+                .forEach(cc => {
+                const chunks = cc.trim().split('=');
+                const iocpVariable = parseInt(chunks[0]);
+                const value = parseInt(chunks[1]);
+                const cb = this.subscriptions[iocpVariable];
+                if (cb) {
+                    cb(iocpVariable, value);
+                }
+            });
         }
     }
 }

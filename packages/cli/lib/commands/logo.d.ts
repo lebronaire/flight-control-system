@@ -1,0 +1,2 @@
+export declare const logo = "\n______\n_ _~-___\n=  = ==(____AA____D\n    ________________________,-~~~~~~~`-.._\n    /     o O o o o o O O o o o o o o O o  |_\n    `~-.__        ___..----..                  )\n          `---~~___________/------------`````\n          =  ===(_________D\n-LebronAire\n";
+//# sourceMappingURL=logo.d.ts.map

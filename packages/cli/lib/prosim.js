@@ -49,7 +49,8 @@ const prosimIOCPMapping = (config) => __awaiter(void 0, void 0, void 0, function
                 iocp: port ? parseInt(port) : undefined,
                 arduino: control.arduino,
                 pin: control.pin,
-                inverted: control.inverted || false
+                inverted: control.inverted || false,
+                type: control.type
             }
         };
     })

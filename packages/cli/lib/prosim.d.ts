@@ -21,6 +21,7 @@ export interface ProsimIOCP {
         arduino: string | undefined;
         pin: number | undefined;
         inverted: boolean;
+        type: string | undefined;
     };
 }
 export declare const prosimConfig: (config: LbaConfig) => Promise<ProsimConfigXML>;

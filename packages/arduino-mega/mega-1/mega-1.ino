@@ -12,7 +12,6 @@ int numberOfActiveGroundPins;
 int inputPinList[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 43};
 int numberOfActiveInputPins;
 
-
 /*
   {pin, inputMin, inputMax, servoMin, servoMax}
 
@@ -20,8 +19,7 @@ int numberOfActiveInputPins;
   servo: The min/max range that the servo is able to move eg. 0 to 180deg
 */
 int servoList[][5] = {
-  {44, 0, 180, 0, 360}
-};
+    {44, 0, 180, 0, 360}};
 
 int numberOfActiveServos;
 int servoConfig[54][4];
@@ -34,11 +32,9 @@ int potVal = 0;
 int potStop = 0;
 unsigned int servoStart;
 
-
 /* LEDs */
 int ledList[] = {36};
 int numberOfLEDs;
-
 
 /*
   @intent(atridge): 54 is the maximum number of inputs on the Mega.
@@ -47,9 +43,8 @@ int numberOfLEDs;
 */
 int pinStore[54];
 
-
-
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   logger("Initializing...");
@@ -62,19 +57,18 @@ void setup() {
   logger("Ready...");
 }
 
-
 /*
   Main Loop. All continuous checking logic
 */
-void loop() {
-    for (int ii = 2; ii < numberOfActiveInputPins; ii++) {
-      syncState(inputPinList[ii]);
-    }
-  
-    readSimOutput();
+void loop()
+{
+  for (int ii = 2; ii < numberOfActiveInputPins; ii++)
+  {
+    syncState(inputPinList[ii]);
+  }
+
+  readSimOutput();
   //  dettachAllServos();
-
-
 
   delay(50);
 }
@@ -82,12 +76,14 @@ void loop() {
 /*************************************************************************
   INITIALIZE
 *************************************************************************/
-void initGroundPins() {
+void initGroundPins()
+{
   numberOfActiveGroundPins = sizeof(groundPinList) / sizeof(int);
 
   logger("Initializing Ground pins...");
 
-  for (int ii = 0; ii < numberOfActiveGroundPins; ii++) {
+  for (int ii = 0; ii < numberOfActiveGroundPins; ii++)
+  {
     int pinNumber = groundPinList[ii];
 
     pinMode(pinNumber, OUTPUT);
@@ -96,27 +92,32 @@ void initGroundPins() {
   }
 }
 
-void initDigitalPins() {
+void initDigitalPins()
+{
   numberOfActiveInputPins = sizeof(inputPinList) / sizeof(int);
 
-  for (int ii = 2; ii < numberOfActiveInputPins; ii++) {
+  for (int ii = 2; ii < numberOfActiveInputPins; ii++)
+  {
     int pinNumber = inputPinList[ii];
     pinMode(pinNumber, INPUT_PULLUP);
     pinStore[pinNumber] = -1;
   }
 }
 
-void initLedPins() {
+void initLedPins()
+{
   numberOfLEDs = sizeof(ledList) / sizeof(int);
 
-  for (int ii = 0; ii < numberOfLEDs; ii++) {
+  for (int ii = 0; ii < numberOfLEDs; ii++)
+  {
     int pinNumber = ledList[ii];
     pinMode(pinNumber, OUTPUT);
     pinStore[pinNumber] = -1;
   }
 }
 
-void initServoPins() {
+void initServoPins()
+{
   numberOfActiveServos = sizeof(servoList) / sizeof(int) / 5;
 
   int servoPin;
@@ -126,7 +127,8 @@ void initServoPins() {
   int servoMax;
   String logMessage = "";
 
-  for (int ss = 0; ss < numberOfActiveServos; ss++) {
+  for (int ss = 0; ss < numberOfActiveServos; ss++)
+  {
     logMessage = "";
 
     servoPin = servoList[0][0];
@@ -162,23 +164,28 @@ void initServoPins() {
   output format: {pin type analog (a) or digital (d)}{pin number}={value}
   eg. d9=1
 */
-void sendMessage(int pin, int value) {
+void sendMessage(int pin, int value)
+{
   String msg = "d";
   Serial.println(msg + pin + "=" + value);
 }
 
-void syncState(int pinNumber) {
+void syncState(int pinNumber)
+{
   int reading = digitalRead(pinNumber);
   int currentValue;
 
-  if (reading == LOW) {
+  if (reading == LOW)
+  {
     currentValue = 0;
   }
-  else {
+  else
+  {
     currentValue = 1;
   }
 
-  if (currentValue != pinStore[pinNumber]) {
+  if (currentValue != pinStore[pinNumber])
+  {
     // Send new value to the serial port
     sendMessage(pinNumber, currentValue);
 
@@ -186,8 +193,10 @@ void syncState(int pinNumber) {
   }
 }
 
-void readSimOutput() {
-  while (Serial.available()) {
+void readSimOutput()
+{
+  while (Serial.available())
+  {
     String message = Serial.readStringUntil('\n');
 
     String pinString = "";
@@ -196,21 +205,26 @@ void readSimOutput() {
     bool foundSeparator = false;
     String character = "";
 
-    for (int ii = 0; ii < message.length(); ii++) {
+    for (int ii = 0; ii < message.length(); ii++)
+    {
       character = message[ii];
 
-      if (character == SEPARATOR) {
+      if (character == SEPARATOR)
+      {
         foundSeparator = true;
       }
-      else if (foundSeparator == false) {
+      else if (foundSeparator == false)
+      {
         pinString = pinString + character;
       }
-      else {
+      else
+      {
         valueString = valueString + character;
       }
     }
 
-    if (valueString == "") {
+    if (valueString == "")
+    {
       return;
     }
 
@@ -225,24 +239,28 @@ void readSimOutput() {
   }
 }
 
-void updateOutputComponent(int pin) {
+void updateOutputComponent(int pin)
+{
   boolean hasUpdated = false;
 
   // TODO: Update displays
 
   // Update LED's
-  for (int ii = 0; ii < numberOfLEDs; ii++) {
+  for (int ii = 0; ii < numberOfLEDs; ii++)
+  {
     int ledPinNumber = ledList[ii];
 
-    if (ledPinNumber == pin) {
+    if (ledPinNumber == pin)
+    {
       updateLED(pin);
       hasUpdated = true;
-      return ;
+      return;
     }
   }
 
   // Exit if work has been done
-  if (hasUpdated == false) {
+  if (hasUpdated == false)
+  {
     return;
   }
 
@@ -250,18 +268,22 @@ void updateOutputComponent(int pin) {
   updateServo(pin);
 }
 
-void updateLED(int pin) {
+void updateLED(int pin)
+{
   int ledValue = pinStore[pin];
 
-  if (ledValue == 1) {
+  if (ledValue == 1)
+  {
     digitalWrite(pin, HIGH);
   }
-  else {
+  else
+  {
     digitalWrite(pin, LOW);
   }
 }
 
-void updateServo(int pin) {
+void updateServo(int pin)
+{
   String logMessage = "";
 
   int servoValue = pinStore[pin];
@@ -270,10 +292,12 @@ void updateServo(int pin) {
   int servoMin = servoConfig[pin][2];
   int servoMax = servoConfig[pin][3];
 
-  if (servoValue > inputMax) {
+  if (servoValue > inputMax)
+  {
     servoValue = inputMax;
   }
-  else if (servoValue < inputMin) {
+  else if (servoValue < inputMin)
+  {
     servoValue = inputMin;
   }
 
@@ -290,7 +314,8 @@ void updateServo(int pin) {
   //  myservo.write(val);
 }
 
-void logger(String l) {
+void logger(String l)
+{
   Serial.print("arduino log: ");
   Serial.println(l);
 }

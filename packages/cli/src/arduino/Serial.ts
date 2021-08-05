@@ -6,7 +6,7 @@ import chalk from 'chalk';
 const SERIAL_PATH_NOT_CONFIGURED_ERROR = 'SERIAL_PATH_NOT_CONFIGURED_ERROR';
 
 
-interface SerialDataEvent {
+export interface SerialDataEvent {
     pinType: 'digital' | 'analog';
     pin: number;
     value: number;
@@ -15,17 +15,23 @@ interface SerialDataEvent {
 type SerialDataCallback = (event: SerialDataEvent) => void;
 
 export default class Serial {
+    name: string;
     path: string;
     port: SerialPort;
     listeners: SerialDataCallback[];
     pinSubjects: { [pin: number]: Subject<string> };
     isReady: boolean;
+    onConnect: () => void;
+    awaitingLogResponse: boolean;
 
-    constructor(path: string) {
+    constructor(name: string, path: string, onConnect: () => void) {
+        this.name = name;
         this.isReady = false;
         this.path = path;
         this.listeners = [];
         this.pinSubjects = {};
+        this.onConnect = onConnect;
+        this.awaitingLogResponse = false;
 
         this.port = this.connect();
     }
@@ -39,43 +45,25 @@ export default class Serial {
             throw new Error(SERIAL_PATH_NOT_CONFIGURED_ERROR);
         }
 
-        this.port = new SerialPort(this.path, {
-            autoOpen: false,
-            // baudRate: 9600,
-            baudRate: 115200,
-            dataBits: 8,
-            parity: 'none',
-            stopBits: 1,
-            lock: false,
-        });
-
-        this.port.open((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-
-            this.port.pipe(serialParser);
-        });
-
         serialParser.on('data', (data) => {
             if (data.indexOf('arduino log') !== -1) {
-                console.log(chalk.cyan(data));
-
-                if (data === 'arduino log: Ready...') {
+                if (data.trim() === 'arduino log: Ready...') {
                     this.isReady = true;
+                    this.onConnect();
                 }
+
+                console.log(chalk.cyan(data.replace('arduino log', this.name)));
+                this.awaitingLogResponse = false;
 
                 return;
             }
 
             const chunkA = data.split('=');
-            const pinType = chunkA[0].substr(0, 1);
-            const pin = parseInt(chunkA[0].substr(1, chunkA[0].length));
+            const pin = parseInt(chunkA[0]);
             const value = parseInt(chunkA[1]);
 
             const event: SerialDataEvent = {
-                pinType: pinType === 'a' ? 'analog' : 'digital',
+                pinType: 'digital',
                 pin,
                 value
             };
@@ -88,6 +76,23 @@ export default class Serial {
             console.log(err);
         });
 
+        this.port = new SerialPort(this.path, {
+            autoOpen: false,
+            baudRate: 115200,
+            dataBits: 8,
+            parity: 'none',
+            stopBits: 1,
+            lock: false,
+        });
+
+        this.port.open((err) => {
+            if (err) {
+                throw err;
+            }
+
+            this.port.pipe(serialParser);
+        });
+
         return this.port;
     }
 
@@ -95,10 +100,25 @@ export default class Serial {
         this.listeners.push(cb);
     };
 
-    send(pin: number, value: number) {
-        const message = `${pin}=${value}\n`;
+    send(pin: number, value: string) {
+        this.sendWithThrottle(pin, value + '\n');
+    }
 
-        this.sendWithThrottle(pin, message);
+    async sendMessageSync(pin: number, value: string) {
+        this.awaitingLogResponse = true;
+        this.sendWithThrottle(pin, value + '\n');
+
+        await this.waitForLogResponse(pin + '');
+    }
+
+    async waitForLogResponse(p: string): Promise<void> {
+        if (this.awaitingLogResponse === true) {
+            await new Promise((resolve) => {
+                setTimeout(() => resolve(true), 10);
+            });
+
+            return this.waitForLogResponse(p);
+        }
     }
 
     sendWithThrottle(pin: number, message: string) {

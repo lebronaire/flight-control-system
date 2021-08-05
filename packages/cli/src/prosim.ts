@@ -27,6 +27,7 @@ export interface ProsimIOCP {
         arduino: string | undefined;
         pin: number | undefined;
         inverted: boolean;
+        type: string | undefined;
     };
 };
 
@@ -69,7 +70,8 @@ export const prosimIOCPMapping = async (config: LbaConfig): Promise<ProsimIOCP> 
                     iocp: port ? parseInt(port) : undefined,
                     arduino: control.arduino,
                     pin: control.pin,
-                    inverted: control.inverted || false
+                    inverted: control.inverted || false,
+                    type: control.type
                 }
             };
         })

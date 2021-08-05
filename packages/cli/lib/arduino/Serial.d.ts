@@ -1,12 +1,13 @@
 import SerialPort from 'serialport';
 import { Subject } from 'rxjs';
-interface SerialDataEvent {
+export interface SerialDataEvent {
     pinType: 'digital' | 'analog';
     pin: number;
     value: number;
 }
 declare type SerialDataCallback = (event: SerialDataEvent) => void;
 export default class Serial {
+    name: string;
     path: string;
     port: SerialPort;
     listeners: SerialDataCallback[];
@@ -14,10 +15,14 @@ export default class Serial {
         [pin: number]: Subject<string>;
     };
     isReady: boolean;
-    constructor(path: string);
+    onConnect: () => void;
+    awaitingLogResponse: boolean;
+    constructor(name: string, path: string, onConnect: () => void);
     connect(): SerialPort;
     addListener(cb: SerialDataCallback): void;
-    send(pin: number, value: number): void;
+    send(pin: number, value: string): void;
+    sendMessageSync(pin: number, value: string): Promise<void>;
+    waitForLogResponse(p: string): Promise<void>;
     sendWithThrottle(pin: number, message: string): void;
 }
 export {};

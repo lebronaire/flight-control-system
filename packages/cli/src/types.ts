@@ -12,7 +12,7 @@ interface IOCPConfig {
     port: number;
 }
 
-interface ArduinoConfig {
+export interface ArduinoConfig {
     [name: string]: {
         path: string;
     }
@@ -26,7 +26,7 @@ export interface ControlsConfig {
     arduino: string;
     pin: number;
     inverted?: boolean;
-    type?: 'led' | 'guage';
+    type?: 'led' | 'gauge' | 'switch';
 }
 
 export interface ControlsStore {
