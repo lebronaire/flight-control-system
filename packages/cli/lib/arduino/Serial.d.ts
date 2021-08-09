@@ -1,6 +1,7 @@
 import SerialPort from 'serialport';
 import { Subject } from 'rxjs';
 export interface SerialDataEvent {
+    arduino: string;
     pinType: 'digital' | 'analog';
     pin: number;
     value: number;

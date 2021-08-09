@@ -80,7 +80,7 @@ const initLookups = (controls) => {
         const cc = controls[kk];
         if (cc.iocp && cc.pin) {
             iocpToPin[cc.iocp] = cc.pin;
-            pinToIOCP[cc.pin] = cc.iocp;
+            pinToIOCP[`${cc.arduino}::${cc.pin}`] = cc.iocp;
             pinToDevice[cc.pin] = cc.arduino || '';
             iocpToName[cc.iocp] = kk;
             devicePinToType[`${cc.arduino}::${cc.pin}`] = cc.type || '';
@@ -91,7 +91,7 @@ const initLookups = (controls) => {
     });
 };
 const handleArduinoEvent = (ee) => {
-    const iocpVariable = pinToIOCP[ee.pin];
+    const iocpVariable = pinToIOCP[`${ee.arduino}::${ee.pin}`];
     if (iocpVariable) {
         exports.setValue(iocpVariable, parseInt(`${ee.value}`));
     }
@@ -103,7 +103,7 @@ const handleArduinoEvent = (ee) => {
 const initIOCP = (config) => {
     const iocpVariableSubscriptions = Object.values(config.controls)
         .filter(cc => cc.type === 'led' || cc.type === 'gauge')
-        .map(cc => pinToIOCP[cc.pin])
+        .map(cc => pinToIOCP[`${cc.arduino}::${cc.pin}`])
         .filter(cc => !!cc);
     iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, (iocpVariable, value) => __awaiter(void 0, void 0, void 0, function* () {
         const pin = iocpToPin[iocpVariable];

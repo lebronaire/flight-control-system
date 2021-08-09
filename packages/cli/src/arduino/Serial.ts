@@ -7,6 +7,7 @@ const SERIAL_PATH_NOT_CONFIGURED_ERROR = 'SERIAL_PATH_NOT_CONFIGURED_ERROR';
 
 
 export interface SerialDataEvent {
+    arduino: string;
     pinType: 'digital' | 'analog';
     pin: number;
     value: number;
@@ -63,6 +64,7 @@ export default class Serial {
             const value = parseInt(chunkA[1]);
 
             const event: SerialDataEvent = {
+                arduino: this.name,
                 pinType: 'digital',
                 pin,
                 value

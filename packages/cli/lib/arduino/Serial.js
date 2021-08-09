@@ -50,6 +50,7 @@ class Serial {
             const pin = parseInt(chunkA[0]);
             const value = parseInt(chunkA[1]);
             const event = {
+                arduino: this.name,
                 pinType: 'digital',
                 pin,
                 value

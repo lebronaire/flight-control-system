@@ -7,7 +7,7 @@ import * as arduino from '../arduino';
 import { SerialDataEvent } from '../arduino/Serial';
 
 let store: ControlsStore = {};
-let pinToIOCP: { [pin: number]: number } = {};
+let pinToIOCP: { [arduinoPin: string]: number } = {};
 let pinToDevice: { [pin: number]: string } = {};
 let iocpToPin: { [iocpVariable: number]: number } = {};
 let invertedOutput: { [iocpVariable: number]: boolean } = {};
@@ -59,7 +59,7 @@ const initLookups = (controls: ProsimIOCP) => {
 
         if (cc.iocp && cc.pin) {
             iocpToPin[cc.iocp] = cc.pin;
-            pinToIOCP[cc.pin] = cc.iocp;
+            pinToIOCP[`${cc.arduino}::${cc.pin}`] = cc.iocp;
             pinToDevice[cc.pin] = cc.arduino || '';
             iocpToName[cc.iocp] = kk;
             devicePinToType[`${cc.arduino}::${cc.pin}`] = cc.type || '';
@@ -72,7 +72,7 @@ const initLookups = (controls: ProsimIOCP) => {
 };
 
 const handleArduinoEvent = (ee: SerialDataEvent) => {
-    const iocpVariable = pinToIOCP[ee.pin];
+    const iocpVariable = pinToIOCP[`${ee.arduino}::${ee.pin}`];
 
     if (iocpVariable) {
         setValue(iocpVariable, parseInt(`${ee.value}`));
@@ -87,7 +87,7 @@ const handleArduinoEvent = (ee: SerialDataEvent) => {
 const initIOCP = (config: LbaConfig) => {
     const iocpVariableSubscriptions = Object.values(config.controls)
         .filter(cc => cc.type === 'led' || cc.type === 'gauge')
-        .map(cc => pinToIOCP[cc.pin])
+        .map(cc => pinToIOCP[`${cc.arduino}::${cc.pin}`])
         .filter(cc => !!cc);
 
     iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, async (iocpVariable: number, value: number) => {
