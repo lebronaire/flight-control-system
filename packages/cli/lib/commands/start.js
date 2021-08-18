@@ -79,7 +79,10 @@ const initLookups = (controls) => {
     Object.keys(controls).forEach(kk => {
         const cc = controls[kk];
         if (cc.iocp && cc.pin) {
-            iocpToPin[cc.iocp] = cc.pin;
+            iocpToPin[cc.iocp] = {
+                device: cc.arduino || '',
+                pin: cc.pin
+            };
             pinToIOCP[`${cc.arduino}::${cc.pin}`] = cc.iocp;
             pinToDevice[cc.pin] = cc.arduino || '';
             iocpToName[cc.iocp] = kk;
@@ -106,13 +109,12 @@ const initIOCP = (config) => {
         .map(cc => pinToIOCP[`${cc.arduino}::${cc.pin}`])
         .filter(cc => !!cc);
     iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, (iocpVariable, value) => __awaiter(void 0, void 0, void 0, function* () {
-        const pin = iocpToPin[iocpVariable];
-        const device = pinToDevice[pin];
+        const { device, pin } = iocpToPin[iocpVariable];
         if (!pin || !device) {
             return;
         }
         const onLabel = value > 1 ? value : '[On]';
-        logger.debug(` -> ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
+        logger.debug(` -> (${device}) ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
         const type = devicePinToType[`${device}::${pin}`] || '';
         yield arduino.send(device, pin, type, value);
     }));

@@ -2,13 +2,19 @@
 
 # IOCP
 [iocp]
-hostname = "192.168.86.48"
+hostname = "192.168.86.50"
 port = 8092
 
 # Arduino's
 [arduino.mega1]
-path = "/dev/tty.usbmodem146101"
+path = "/dev/tty.usbmodem1461301"
 
+[arduino.mega3]
+path = "/dev/tty.usbmodem1461101"
+
+# /dev/tty.usbmodem1461101
+# /dev/tty.usbmodem1461201
+# /dev/tty.usbmodem1461301
 
 [prosim]
 # configXMLPath = "/Users/atridgedcosta/Documents/Projects/lebronaire/flight-control-system/packages/server/sample/atr-config.xml"
@@ -22,32 +28,107 @@ configXMLPath = "/Users/atridgedcosta/Desktop/config.xml"
 # inverted: tue / false
 
 
-# Electric
-#"APU switch Off" =                  { arduino = "mega1", pin = 8,   inverted = true }
-#"APU switch Start" =                { arduino = "mega1", pin = 6,   inverted = true }
-#"Ignition select Left" =            { arduino = "mega1", pin = 3,   inverted = true }
-#"Ignition select Right" =           { arduino = "mega1", pin = 4,   inverted = true }
-#"Battery switch On" =               { arduino = "mega1", pin = 43 }
-#"Standby power switch Auto" =       { arduino = "mega1", pin = 27,  inverted = true }
-#"Standby power switch Bat" =        { arduino = "mega1", pin = 28,  inverted = true }
+### OVHD LIGHTING PANEL ###
+"Emerg Exit Lights not armed" =  { arduino = "mega1", pin = 8,  type = "led" }
+"Attend call" =                  { arduino = "mega1", pin = 9,  type = "led" }
+"No Smoking On" =                { arduino = "mega1", pin = 10, inverted = true }
+"No Smoking Off" =               { arduino = "mega1", pin = 11, inverted = true }
+"Emer Exit Lights Off" =         { arduino = "mega1", pin = 12, inverted = true }
+"Emer Exit Lights On" =          { arduino = "mega1", pin = 13, inverted = true }
+"Seatbelt On" =                  { arduino = "mega1", pin = 15, inverted = true }
+"Seatbelt Off" =                 { arduino = "mega1", pin = 14, inverted = true }
 
-# OVHD BUS Panel
-"APU Low oil pressure" =            { arduino = "mega1", pin = 3,  type = "led" }
-"Transfer bus OFF 1" =              { arduino = "mega1", pin = 11,  type = "led"  }
-"Transfer bus OFF 2" =              { arduino = "mega1", pin = 7,  type = "led"  }
-"Source OFF 1" =                    { arduino = "mega1", pin = 9,  type = "led"  }
-"Source OFF 2" =                    { arduino = "mega1", pin = 5,  type = "led"  }
-"APU GEN OFF BUS" =                 { arduino = "mega1", pin = 8,  type = "led" }
+#"TEST_PIN_16" =                  { arduino = "mega1", pin = 16 }
+#"TEST_PIN_17" =                  { arduino = "mega1", pin = 17 }
+#"TEST_PIN_18" =                  { arduino = "mega1", pin = 18 }
+#"TEST_PIN_19" =                  { arduino = "mega1", pin = 19 }
+#"TEST_PIN_20" =                  { arduino = "mega1", pin = 20 }
+#"TEST_PIN_21" =                  { arduino = "mega1", pin = 21 }
+#"TEST_PIN_22" =                  { arduino = "mega1", pin = 22 }
+#"TEST_PIN_23" =                  { arduino = "mega1", pin = 23 }
 
-#"GEN BUS OFF 1" =                   { arduino = "mega1", pin = 999,  type = "led" }
-#"GEN BUS OFF 2" =                   { arduino = "mega1", pin = 999,  type = "led" }
-# "GEN 1 On" =                        { arduino = "mega1", pin = 14,   inverted = true }
-# "GEN 1 Off" =                       { arduino = "mega1", pin = 10,   inverted = true }
-# "GEN 2 On" =                        { arduino = "mega1", pin = 18,   inverted = true }
-# "GEN 2 Off" =                       { arduino = "mega1", pin = 21,   inverted = true }
-"APU GEN 1 On" =                    { arduino = "mega1", pin = 12,   inverted = true }
-"APU GEN 1 Off" =                   { arduino = "mega1", pin = 13,  inverted = true }
-"APU GEN 2 On" =                    { arduino = "mega1", pin = 19,  inverted = true }
-"APU GEN 2 Off" =                   { arduino = "mega1", pin = 17,  inverted = true }
-"Bus transfer switch Auto" =        { arduino = "mega1", pin = 20 }
-"APU" =                             { arduino = "mega1", pin = 44, type = "gauge" }
+### OVHD IRS ALIGN ###
+"IRS left Align" =               { arduino = "mega1", pin = 24, inverted = true }
+"IRS left Nav" =                 { arduino = "mega1", pin = 25, inverted = true }
+"IRS left Att" =                 { arduino = "mega1", pin = 26, inverted = true }
+"IRS right Align" =              { arduino = "mega1", pin = 27, inverted = true }
+"IRS right Nav" =                { arduino = "mega1", pin = 28, inverted = true }
+"IRS right Att" =                { arduino = "mega1", pin = 29, inverted = true }
+
+#"TEST_PIN_30" =                  { arduino = "mega1", pin = 30 }
+#"TEST_PIN_31" =                  { arduino = "mega1", pin = 31 }
+#"TEST_PIN_32" =                  { arduino = "mega1", pin = 32 }
+#"TEST_PIN_33" =                  { arduino = "mega1", pin = 33 }
+#"TEST_PIN_34" =                  { arduino = "mega1", pin = 34 }
+#"TEST_PIN_35" =                  { arduino = "mega1", pin = 35 }
+
+### OVHD DC/ELEC ###
+"Bat discharge" =                { arduino = "mega1", pin = 36, type = "led" }
+"TR UNIT" =                      { arduino = "mega1", pin = 37, type = "led" }
+"ELEC" =                         { arduino = "mega1", pin = 38, type = "led" }
+"Battery switch On" =            { arduino = "mega1", pin = 39 }
+#"TEST_PIN_40" =                  { arduino = "mega1", pin = 40 }
+#"TEST_PIN_41" =                  { arduino = "mega1", pin = 41 }
+#"TEST_PIN_42" =                  { arduino = "mega1", pin = 42 }
+#"TEST_PIN_43" =                  { arduino = "mega1", pin = 43 }
+
+### OVHD STANDBY POWER ###
+"Standby power switch Auto" =    { arduino = "mega1", pin = 44, inverted = true }
+"Drive 2" =                      { arduino = "mega1", pin = 45, type = "led" }
+"Standby power switch Bat" =     { arduino = "mega1", pin = 46, inverted = true }
+#"TEST_PIN_47" =                  { arduino = "mega1", pin = 47 }
+#"TEST_PIN_48" =                  { arduino = "mega1", pin = 48 }
+#"TEST_PIN_49" =                  { arduino = "mega1", pin = 49 }
+#"TEST_PIN_50" =                  { arduino = "mega1", pin = 50 }
+#"TEST_PIN_51" =                  { arduino = "mega1", pin = 51 }
+#"TEST_PIN_52" =                  { arduino = "mega1", pin = 52 }
+#"TEST_PIN_53" =                  { arduino = "mega1", pin = 53 }
+
+### OVHD FUEL PUMPS ###
+"Fuel Right Aft LP" =            { arduino = "mega1", pin = 54, type = "led" }
+"Fuel Right Fwd LP" =            { arduino = "mega1", pin = 55, type = "led" }
+"Fuel Left Fwd On" =             { arduino = "mega1", pin = 56, inverted = true }
+"Fuel Right Aft On" =            { arduino = "mega1", pin = 57, inverted = true }
+"Fuel Right Fwd On" =            { arduino = "mega1", pin = 58, inverted = true }
+"Fuel Left Aft On" =             { arduino = "mega1", pin = 59, inverted = true }
+"Fuel Center Right On" =         { arduino = "mega1", pin = 60, inverted = true }
+"Fuel Center Left On" =          { arduino = "mega1", pin = 61, inverted = true }
+"Fuel Left Aft LP" =             { arduino = "mega1", pin = 62, type = "led" }
+"Filter Bypass L" =              { arduino = "mega1", pin = 63, type = "led" }
+"Fuel Center Right LP" =         { arduino = "mega1", pin = 64, type = "led" }
+"Crossfeed indicator" =          { arduino = "mega1", pin = 65, type = "led" }
+"Fuel Left Fwd LP" =             { arduino = "mega1", pin = 66, type = "led" }
+"Fuel Center Left LP" =          { arduino = "mega1", pin = 67, type = "led" }
+"SPAR Valve Closed R" =          { arduino = "mega1", pin = 68, type = "led" }
+"Filter Bypass R" =              { arduino = "mega1", pin = 69, type = "led" }
+
+
+### OVHD BUS ###
+#"TEST_PIN_A30" =                 { arduino = "mega3", pin = 0 }
+#"TEST_PIN_A31" =                 { arduino = "mega3", pin = 1 }
+"GEN 2 On" =                     { arduino = "mega3", pin = 2, inverted = true }
+"APU GEN 2 On" =                 { arduino = "mega3", pin = 3, inverted = true }
+"Bus transfer switch Auto" =     { arduino = "mega3", pin = 4 }
+"GEN 2 Off" =                    { arduino = "mega3", pin = 5, inverted = true }
+"Ground Power On" =              { arduino = "mega3", pin = 6 }
+"APU" =                          { arduino = "mega3", pin = 7, type = "gauge" }
+"APU GEN OFF BUS" =              { arduino = "mega3", pin = 8, type = "led" }
+"Source OFF 1" =                 { arduino = "mega3", pin = 9, type = "led" }
+"GEN 1 Off" =                    { arduino = "mega3", pin = 10, inverted = true }
+"Transfer bus OFF 1" =           { arduino = "mega3", pin = 11, type = "led" }
+"APU GEN 1 On" =                 { arduino = "mega3", pin = 12, inverted = true }
+"APU GEN 1 Off" =                { arduino = "mega3", pin = 13, inverted = true }
+"GEN 1 On" =                     { arduino = "mega3", pin = 14, inverted = true }
+"GEN BUS OFF 1" =                { arduino = "mega3", pin = 15, type = "led"  }
+"Grd Pwr available" =            { arduino = "mega3", pin = 16, type = "led"  }
+"APU GEN 2 Off" =                { arduino = "mega3", pin = 17, inverted = true }
+"APU FAULT" =                    { arduino = "mega3", pin = 18, type = "led"  }
+"APU Low oil pressure" =         { arduino = "mega3", pin = 19, type = "led"  }
+"APU Overspeed" =                { arduino = "mega3", pin = 20, type = "led"  }
+"Source OFF 2" =                 { arduino = "mega3", pin = 21, type = "led"  }
+"GEN BUS OFF 2" =                { arduino = "mega3", pin = 22, type = "led"  }
+"Transfer bus OFF 2" =           { arduino = "mega3", pin = 23, type = "led"  }
+#"TEST_PIN_A324" =                { arduino = "mega3", pin = 24 }
+#"TEST_PIN_A325" =                { arduino = "mega3", pin = 25 }
+#"TEST_PIN_A326" =                { arduino = "mega3", pin = 26 }
+#"APU Maint" =                    { arduino = "mega3", pin = 999, type = "led" }

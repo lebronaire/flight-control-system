@@ -9,7 +9,7 @@ import { SerialDataEvent } from '../arduino/Serial';
 let store: ControlsStore = {};
 let pinToIOCP: { [arduinoPin: string]: number } = {};
 let pinToDevice: { [pin: number]: string } = {};
-let iocpToPin: { [iocpVariable: number]: number } = {};
+let iocpToPin: { [iocpVariable: number]: { pin: number, device: string } } = {};
 let invertedOutput: { [iocpVariable: number]: boolean } = {};
 let iocpToName: { [iocpVariable: number]: string } = {};
 let devicePinToType: { [devicePin: string]: string } = {};
@@ -58,7 +58,10 @@ const initLookups = (controls: ProsimIOCP) => {
         const cc = controls[kk];
 
         if (cc.iocp && cc.pin) {
-            iocpToPin[cc.iocp] = cc.pin;
+            iocpToPin[cc.iocp] = {
+                device: cc.arduino || '',
+                pin: cc.pin
+            };
             pinToIOCP[`${cc.arduino}::${cc.pin}`] = cc.iocp;
             pinToDevice[cc.pin] = cc.arduino || '';
             iocpToName[cc.iocp] = kk;
@@ -92,8 +95,7 @@ const initIOCP = (config: LbaConfig) => {
 
     iocpClient.addVariableSubscriptions(iocpVariableSubscriptions, async (iocpVariable: number, value: number) => {
         // Send new value to the appropriate pin via serial
-        const pin = iocpToPin[iocpVariable];
-        const device = pinToDevice[pin];
+        const { device, pin } = iocpToPin[iocpVariable];
 
         if (!pin || !device) {
             // Don't know the pin so can't do anything with the information
@@ -102,7 +104,7 @@ const initIOCP = (config: LbaConfig) => {
 
         const onLabel = value > 1 ? value : '[On]';
 
-        logger.debug(` -> ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
+        logger.debug(` -> (${device}) ${iocpToName[iocpVariable]} ${value === 0 ? '[Off]' : onLabel}`);
 
         const type = devicePinToType[`${device}::${pin}`] || '';
         await arduino.send(device, pin, type, value);
