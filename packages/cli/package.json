@@ -21,7 +21,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "x": "node bin/lba start --verbose"
+    "start": "node bin/lba start --verbose"
   },
   "dependencies": {
     "chalk": "^4.1.1",
