@@ -1,6 +1,6 @@
 {
   "name": "lba-cli",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "author": "Lebronaire",
   "repository": "https://github.com/lebronaire/flight-control-system/tree/main/packages/cli",
   "main": "lib/lba.js",
@@ -20,7 +20,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "x": "node bin/lba start --verbose"
   },
   "dependencies": {
     "chalk": "^4.1.1",

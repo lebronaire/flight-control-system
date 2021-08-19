@@ -69,14 +69,12 @@ export default class IOCP {
 
     async addVariableSubscriptions(listOfVariables: IOCPVariable[], callback: IOCPVariableSubscriptionCallback) {
         listOfVariables.forEach(vv => {
-            if (this.subscriptions[vv]) {
-                throw new Error(`A subscript for IOCP ${vv} already exists. Cannot have more than 1`);
+            if (!this.subscriptions[vv]) {
+                this.subscriptions[vv] = callback;
             }
-
-            this.subscriptions[vv] = callback;
         });
 
-        // Request subscript from IOCP server
+        // Request subscription from IOCP server
         const msg = `Arn.Inicio:${listOfVariables.join(':')}`;
         await this.send(msg);
     }

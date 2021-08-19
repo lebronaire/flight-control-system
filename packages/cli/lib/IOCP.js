@@ -68,10 +68,9 @@ class IOCP {
     addVariableSubscriptions(listOfVariables, callback) {
         return __awaiter(this, void 0, void 0, function* () {
             listOfVariables.forEach(vv => {
-                if (this.subscriptions[vv]) {
-                    throw new Error(`A subscript for IOCP ${vv} already exists. Cannot have more than 1`);
+                if (!this.subscriptions[vv]) {
+                    this.subscriptions[vv] = callback;
                 }
-                this.subscriptions[vv] = callback;
             });
             const msg = `Arn.Inicio:${listOfVariables.join(':')}`;
             yield this.send(msg);

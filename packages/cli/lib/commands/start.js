@@ -46,6 +46,7 @@ let iocpToName = {};
 let devicePinToType = {};
 let iocpClient;
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.clear();
     logger.system('Starting...');
     logger.system('Loading config.toml...');
     const config = yield config_1.getConfig();

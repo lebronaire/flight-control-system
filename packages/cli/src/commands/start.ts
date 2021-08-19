@@ -17,6 +17,8 @@ let devicePinToType: { [devicePin: string]: string } = {};
 let iocpClient: IOCP;
 
 export const start = async () => {
+    console.clear();
+    
     logger.system('Starting...');
 
     logger.system('Loading config.toml...');
