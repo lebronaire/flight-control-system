@@ -8,7 +8,7 @@
 class LBAServo
 {
 //    Servo servoList[54] = {};
-    int state[54] = {};
+    int state[70] = {};
 
   public:
     LBAServo();

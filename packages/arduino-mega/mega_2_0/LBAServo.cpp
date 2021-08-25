@@ -13,6 +13,7 @@ LBAServo::LBAServo() {
 
 void LBAServo::initialize(int pin) {
   s.attach(pin);
+  s.write(0);
   String msg = "";
   logger(msg + "Init Servo:" + pin);
 };
@@ -23,5 +24,10 @@ void LBAServo::update(int pin, String val) {
   s.attach(pin);
   s.write(nextState);
   delay(15);
-//  s.detach();
+
+  // detach servo power from pin to stop buzzing
+  if (nextState == 0) {
+    delay(15);
+    s.detach();
+  }
 };

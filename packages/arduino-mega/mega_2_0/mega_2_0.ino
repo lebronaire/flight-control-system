@@ -14,7 +14,7 @@ void loop() {
   checkStateChanges();
   readSimOutput();
 
-  delay(100);
+  delay(30);
 }
 
 void readSimOutput() {

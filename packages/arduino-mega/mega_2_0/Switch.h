@@ -6,7 +6,7 @@
 
 class LBASwitch
 {
-    int state[54] = {};
+    int state[70] = {};
 
   public:
     LBASwitch();

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-const int MAX_PINS = 54;
+const int MAX_PINS = 70;
 
 enum ComponentType {
   TYPE_LED,
