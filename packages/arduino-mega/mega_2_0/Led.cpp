@@ -3,7 +3,7 @@
 
 void LBALed::initialize(int pin) {
   pinMode(pin, OUTPUT);
-  digitalWrite(pin, HIGH);
+  digitalWrite(pin, LOW);
 
   String msg = "";
   logger(msg + "Init LED:" + pin);
