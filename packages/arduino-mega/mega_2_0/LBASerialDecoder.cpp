@@ -47,4 +47,7 @@ ComponentType LBASerialDecoder::getType() {
   else if (type == "O") {
     return TYPE_SERVO;
   }
+  else if (type == "P") {
+    return TYPE_POTENCH;
+  }
 }

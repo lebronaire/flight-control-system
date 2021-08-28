@@ -55,6 +55,7 @@ const initializeControls = async (config: LbaConfig) => {
 
 export const send = async (device: string, pin: number, type: string, value: number) => {
     const msg = `U` + toPin(pin) + toType(type) + value;
+
     await devices[device].sendMessageSync(pin, msg);
 };
 
@@ -67,7 +68,8 @@ const toType = (type: string): string => {
 
     if (type === 'led') { t = 'L'; }
     else if (type === 'gauge') { t = 'O'; }
-    else if (type = 'switch') { t = 'S'; }
+    else if (type === 'switch') { t = 'S'; }
+    else if (type === 'potench') { t = 'P'; }
 
     return t;
 };

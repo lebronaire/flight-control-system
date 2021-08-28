@@ -1,8 +1,9 @@
 import { getConfig } from '../config';
 import { prosimIOCPMapping, ProsimIOCP } from '../prosim';
 import IOCP from '../IOCP';
-import { ControlsStore, LbaConfig } from '../types';
+import { ControlsStore } from '../types';
 import * as logger from '../logger';
+import { LbaConfig } from '../types';
 import * as arduino from '../arduino';
 import { SerialDataEvent } from '../arduino/Serial';
 
@@ -18,7 +19,7 @@ let iocpClient: IOCP;
 
 export const start = async () => {
     console.clear();
-    
+
     logger.system('Starting...');
 
     logger.system('Loading config.toml...');
@@ -125,7 +126,8 @@ export const setValue = async (iocpVariable: number, value: number): Promise<voi
             store[iocpVariable] = nextValue;
             await iocpClient.setVariable(iocpVariable, nextValue);
 
-            logger.debug(` <- ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : '[On]'}`);
+            const onLabel = nextValue > 1 ? nextValue : '[On]';
+            logger.debug(` <- ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : onLabel}`);
         }
     } catch (error) {
         console.log(error);

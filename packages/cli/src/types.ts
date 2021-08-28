@@ -26,7 +26,7 @@ export interface ControlsConfig {
     arduino: string;
     pin: number;
     inverted?: boolean;
-    type?: 'led' | 'gauge' | 'switch';
+    type?: 'led' | 'gauge' | 'switch' | 'potench';
 }
 
 export interface ControlsStore {

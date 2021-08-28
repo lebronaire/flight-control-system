@@ -8,7 +8,8 @@ const int MAX_PINS = 70;
 enum ComponentType {
   TYPE_LED,
   TYPE_SERVO,
-  TYPE_SWITCH
+  TYPE_SWITCH,
+  TYPE_POTENCH
 };
 
 enum InputCommand {

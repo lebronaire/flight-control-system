@@ -87,8 +87,11 @@ const toType = (type) => {
     else if (type === 'gauge') {
         t = 'O';
     }
-    else if (type = 'switch') {
+    else if (type === 'switch') {
         t = 'S';
+    }
+    else if (type === 'potench') {
+        t = 'P';
     }
     return t;
 };

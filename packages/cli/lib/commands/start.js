@@ -129,7 +129,8 @@ const setValue = (iocpVariable, value) => __awaiter(void 0, void 0, void 0, func
         if (store[iocpVariable] !== nextValue) {
             store[iocpVariable] = nextValue;
             yield iocpClient.setVariable(iocpVariable, nextValue);
-            logger.debug(` <- ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : '[On]'}`);
+            const onLabel = nextValue > 1 ? nextValue : '[On]';
+            logger.debug(` <- ${iocpToName[iocpVariable]} ${nextValue === 0 ? '[Off]' : onLabel}`);
         }
     }
     catch (error) {

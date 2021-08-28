@@ -2,13 +2,16 @@
 #include "Led.h"
 #include "Switch.h"
 #include "LBAServo.h"
+#include "Potench.h"
 
 LBALed led;
 LBASwitch toggleSwitch;
 LBAServo servos;
+Potench pots;
 
 void checkStateChanges() {
   toggleSwitch.onLoop();
+  pots.onLoop();
 }
 
 void handleInitialize(int pin, ComponentType type, String val) {
@@ -18,6 +21,10 @@ void handleInitialize(int pin, ComponentType type, String val) {
   }
   else if (type == TYPE_SWITCH) {
     toggleSwitch.initialize(pin);
+    return;
+  }
+  else if (type == TYPE_POTENCH) {
+    pots.initialize(pin);
     return;
   }
   else if (type == TYPE_SERVO) {
